@@ -1,0 +1,66 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="checkout__form mt-4">
+    <h4 class="text-center mx-5">Address form</h4>
+    <form method="POST">
+        {% csrf_token %}
+        <div class="row justify-content-center">
+            <div class="col-lg-10 col-md-8">
+                <div class="row">
+                    <div class="col-lg-6">
+                        <div class="checkout__input">
+                            <p>Fist Name<span>*</span></p>
+                            <input type="text" name="firstname">
+                        </div>
+                    </div>
+                    <div class="col-lg-6">
+                        <div class="checkout__input">
+                            <p>Last Name<span>*</span></p>
+                            <input type="text" name="lastname">
+                        </div>
+                    </div>
+                </div>
+                <div class="checkout__input">
+                    <p>Country<span>*</span></p>
+                    <input type="text" name="country">
+                </div>
+                <div class="checkout__input">
+                    <p>Address<span>*</span></p>
+                    <input type="text" placeholder="Street Address" class="checkout__input__add" name="streetaddress">
+                    
+                </div>
+                <div class="checkout__input">
+                    <p>Town/City<span>*</span></p>
+                    <input type="text" name="city">
+                </div>
+                <div class="checkout__input">
+                    <p>Country/State<span>*</span></p>
+                    <input type="text" name="state">
+                </div>
+                <div class="checkout__input">
+                    <p>Postcode / ZIP<span>*</span></p>
+                    <input type="number" name="zip">
+                </div>
+                <div class="row">
+                    <div class="col-lg-6">
+                        <div class="checkout__input">
+                            <p>Phone<span>*</span></p>
+                            <input type="number" name="phone">
+                        </div>
+                    </div>
+                    <div class="col-lg-6">
+                        <div class="checkout__input">
+                            <p>Email<span>*</span></p>
+                            <input type="email" name="email">
+                        </div>
+                    </div>
+                </div>
+                
+                <button type="submit" class="btn btn-success px-5" style="background-color: #7fad39;">submit</button>
+            </div>
+           
+        </div>
+    </form>
+</div>
+<br>
+{% endblock %}

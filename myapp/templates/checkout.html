@@ -1,0 +1,155 @@
+
+{% extends 'base.html' %}
+{% block content %}
+{% load static %}
+    <!-- Breadcrumb Section Begin -->
+    <section class="breadcrumb-section set-bg" data-setbg="{% static 'img/breadcrumb.jpg' %}">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12 text-center">
+                    <div class="breadcrumb__text">
+                        <h2>Checkout</h2>
+                        <div class="breadcrumb__option">
+                            <a href="./index.html">Home</a>
+                            <span>Checkout</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- Breadcrumb Section End -->
+
+    <!-- Checkout Section Begin -->
+    <section class="checkout spad">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12">
+                    <h6><span class="icon_tag_alt"></span> Have a coupon? <a href="#">Click here</a> to enter your code
+                    </h6>
+                </div>
+            </div>
+            <div class="checkout__form">
+                <h4>Billing Details</h4>
+                <form>
+                    {% if total_obj %}
+                    <div class="row">
+                        <div class="col-lg-8 col-md-6">
+                            {% if address_obj %}
+                            {% for address_ob in address_obj %}
+                            <div class="form-check" id="address_list">
+                                <input class="form-check-input" type="checkbox" name="adrs" class="address" id="flexRadioDefault" value="{{address_ob.id}}">
+                                <label class="form-check-label" for="flexRadioDefault">
+                                  {{address_ob.first_name}} {{address_ob.last_name}},{{address_ob.country}}
+                                  {{address_ob.address_name}},{{address_ob.city}},{{address_ob.state}},{{address_ob.zip}},<br>{{address_ob.phone}},
+                                  {{address_ob.email}}
+                                </label>
+                            </div>
+                           
+                              <hr>
+                              {% endfor %}
+                              {% else %}
+                              <a href="{% url 'address' %}" style="padding: 10px 20px; background-color: #7fad39; border: none; color: white;">Create a new address</a>
+                              {% endif %}
+                        </div>
+                       
+                        <div class="col-lg-4 col-md-6">
+                            <div class="checkout__order">
+                                <h4>Your Order</h4>
+                                <div class="checkout__order__products">Products <span>Total</span></div>
+                                <ul>
+                                    {% for cart_item in cart_items %}
+                                    <li>{{cart_item.product.product_name}}<span>${% widthratio cart_item.product.product_price 1 cart_item.quantity %}</span></li>
+                                    {% endfor %}
+                                </ul>
+                                <div class="checkout__order__subtotal">Subtotal <span>${{total_obj.total_cart}}</span></div>
+                                <div class="checkout__order__total">Total <span>${{total_obj.total_cart}}</span></div>
+
+                                <button type="submit" id="rzp-button1" class="site-btn">PLACE ORDER</button>
+                            </div>
+                        </div>
+                    </div>
+                    {% else %}
+                    <h2 style="color: red;">Add to cart product to continue</h2>
+                    {% endif %}
+                </form>
+            </div>
+        </div>
+    </section>
+    <!-- Checkout Section End -->
+    
+{% endblock %}
+
+{% block extra %}
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+<script>
+var options = {
+    "key": "rzp_test_YuScxn2ZFmo7mJ", // Enter the Key ID generated from the Dashboard
+    "amount": "{{payment.amount}}", // Amount is in currency subunits. Default currency is INR. Hence, 50000 refers to 50000 paise
+    "currency": "INR",
+    "name": "Acme Corp",
+    "description": "Test Transaction",
+    "image": "https://example.com/your_logo",
+    "order_id": "{{payment.id}}", //This is a sample Order ID. Pass the `id` obtained in the response of Step 1
+    "handler": function (response){
+      
+        var markedCheckbox = document.getElementsByName('adrs');
+        for (var checkbox of markedCheckbox) {
+            if (checkbox.checked)
+                window.location.href = `http://127.0.0.1:8000/success/?payment_id=${response.razorpay_payment_id}&a_id=${checkbox.value}`;
+        }
+            
+        // var address=document.getElementsByClassName("address").value;
+        // window.location.href = `http://127.0.0.1:8000/success/?payment_id=${response.razorpay_payment_id}&a_id=${checkedAddress[0]}`
+    },
+    "prefill": {
+        "name": "Gaurav Kumar",
+        "email": "gaurav.kumar@example.com",
+        "contact": "9000090000"
+    },
+    "notes": {
+        "address": "Razorpay Corporate Office"
+    },
+    "theme": {
+        "color": "#3399cc"
+    }
+};
+var rzp1 = new Razorpay(options);
+rzp1.on('payment.failed', function (response){
+        alert(response.error.code);
+        alert(response.error.description);
+        alert(response.error.source);
+        alert(response.error.step);
+        alert(response.error.reason);
+        alert(response.error.metadata.order_id);
+        alert(response.error.metadata.payment_id);
+});
+document.getElementById('rzp-button1').onclick = function(e){
+    rzp1.open();
+    e.preventDefault();
+}
+
+</script>
+<!-- <script>
+    var addressList = document.getElementById('address_list');
+    addressList.addEventListener('submit', function(event){
+
+        event.preventDefault()
+        var checkedAddress = [];
+        var checkboxs = document.querySelectorAll('input[type="checkbox"]:checked');
+        
+        checkboxs.forEach(function(checkbox){
+            checkedAddress.push(checkbox.value);
+        })
+
+        console.log(checkedAddress)
+
+        // var addressElement = event.target.closest('.address');
+        // if (addressElement){
+        //     var addressId = addressElement.dataset.flexRadioDefault;
+        //     console.log(addressId);
+        // }
+    });
+
+</script> -->
+{% endblock %}

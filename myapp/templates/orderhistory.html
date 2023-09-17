@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<div class="container">
+
+    {% if order_item_objs %}
+    <table class="table">
+        <thead>
+          <tr>
+            <th scope="col">Image</th>
+            <th scope="col">Order id</th>
+            <th scope="col">Order description</th>
+            <th scope="col">Quantity</th>
+            <th scope="col">date</th>
+          </tr>
+        </thead>
+        <tbody>
+            {% for order_item_obj in order_item_objs %}
+          <tr>
+            <th><img src="{{order_item_obj.products.product_img.url}}" width="150px" height="130px"></th>
+            <td>{{order_item_obj.order.uid}}</td>
+            <td><b>product name :</b> {{order_item_obj.products.product_name}}
+              <br><b>product desc. :</b> {{order_item_obj.products.product_desc}}<br>
+              <b>product price :</b> ₹{{order_item_obj.products.product_price}}
+            </td>
+            
+            <td>{{order_item_obj.quantity}}</td>
+            <td>{{order_item_obj.order.order_date}}</td>
+            
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+      {% else %}
+      <h2>NO records found, order any product to continue</h2>
+      {% endif %}
+</div>
+{% endblock %}
